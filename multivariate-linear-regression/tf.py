@@ -1,4 +1,11 @@
 import tensorflow as tf
+import os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #忽略警告
+
 
 x1 = tf.constant([
 137.97,
@@ -68,4 +75,25 @@ Y = tf.reshape(y,shape=(n,1))
 # W = ((X'X)-1)X'Y
 W = tf.linalg.matmul(tf.linalg.matmul(tf.linalg.inv(tf.linalg.matmul(XT,X)),XT),Y)
 W = tf.reshape(W,[-1])
+yp = W[0] + W[1]*x1 + W[2]*x2
+
+X1,X2 = tf.meshgrid(x1,x2)
+YP = W[0] + W[1]*X1 + W[2]*X2
+
+
 print(W)
+
+fig = plt.figure()
+ax =Axes3D(fig)
+
+ax.scatter(x1, x2, y,label='fact')
+ax.scatter(x1, x2, yp,color='r',label='predict')
+ax.plot_wireframe(X1,X2,YP,color='c',linewidth=.5,label='regression surface')
+
+ax.set_xlabel('Area',color='r')
+ax.set_ylabel('Room',color='r')
+ax.set_zlabel('Price',color='r')
+plt.legend()
+plt.show()
+
+

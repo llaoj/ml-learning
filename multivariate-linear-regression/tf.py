@@ -77,10 +77,6 @@ W = tf.linalg.matmul(tf.linalg.matmul(tf.linalg.inv(tf.linalg.matmul(XT,X)),XT),
 W = tf.reshape(W,[-1])
 yp = W[0] + W[1]*x1 + W[2]*x2
 
-X1,X2 = tf.meshgrid(x1,x2)
-YP = W[0] + W[1]*X1 + W[2]*X2
-
-
 print(W)
 
 fig = plt.figure()
@@ -88,6 +84,9 @@ ax =Axes3D(fig)
 
 ax.scatter(x1, x2, y,label='fact')
 ax.scatter(x1, x2, yp,color='r',label='predict')
+
+X1,X2 = tf.meshgrid(x1,x2)
+YP = W[0] + W[1]*X1 + W[2]*X2
 ax.plot_wireframe(X1,X2,YP,color='c',linewidth=.5,label='regression surface')
 
 ax.set_xlabel('Area',color='r')

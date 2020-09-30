@@ -1,10 +1,11 @@
 import tensorflow as tf
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #忽略警告
 
-x = tf.constant([
+x = np.array([
 137.97,
 104.50,
 100.00,
@@ -22,8 +23,7 @@ x = tf.constant([
 81.26,
 86.21
 ])
-
-y = tf.constant([
+y = np.array([
 1,
 1,
 0,
@@ -40,33 +40,32 @@ y = tf.constant([
 0,
 0,
 0
-],dtype=tf.float32)
+])
 
-x = x-tf.reduce_mean(x)
-print(x)
+plt.scatter(x,y)
 
-w = tf.Variable(1.)
-b = tf.Variable(1.)
-
-
+x = x-np.mean(x)
+np.random.seed(612)
+w = tf.Variable(np.random.randn())
+b = tf.Variable(np.random.randn())
 eta = 0.005
 
 cross_entropy = []
-for i in range(0, 51):
-    y_p = 1/(1+tf.exp(-w*x-b))
+for i in range(0, 6):
     with tf.GradientTape() as g:
+        y_p = 1/(1+tf.exp(-(w*x+b)))
+        y_p = tf.clip_by_value(y_p,1e-10,1.0)
         loss = -tf.reduce_mean(y*tf.math.log(y_p)+(1-y)*tf.math.log(1-y_p))
     dl_dw,dl_db = g.gradient(loss,[w,b])
 
-    print(dl_dw,dl_db)
     w.assign_sub(eta*dl_dw)
     b.assign_sub(eta*dl_db)
     cross_entropy.append(loss)
 
-    if i % 10 == 0:
+    if i % 1 == 0:
         print('i=',i,' loss=',loss)
 
-# plt.figure()
-# plt.scatter(x,y)
+plt.figure()
+plt.scatter(x,y)
 
-# plt.show()
+plt.show()

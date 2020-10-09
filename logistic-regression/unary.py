@@ -53,6 +53,7 @@ eta = 0.005
 cross_entropy = []
 for i in range(0, 6):
     with tf.GradientTape() as g:
+        # sigmoid
         y_p = 1/(1+tf.exp(-(w*x+b)))
         y_p = tf.clip_by_value(y_p,1e-10,1.0)
         loss = -tf.reduce_mean(y*tf.math.log(y_p)+(1-y)*tf.math.log(1-y_p))
